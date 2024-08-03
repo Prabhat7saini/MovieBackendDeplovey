@@ -1,9 +1,7 @@
-
-
-import { useSelector } from "react-redux";
 import { apiConnector } from "../apiConnector"
 import { movieEndPoints } from "../apis";
-import { RootState } from "../../redux/store";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 
 export const fetchMovies = async () => {
@@ -64,10 +62,14 @@ export const addFavMOvie = async (token: string, _id: string) => {
             throw new Error(response.data.message);
         }
         console.log(`add_Fav_MOVIE_API....`, response)
+        toast.success(response.data.message)
         return response;
     }
     catch (err) {
-        console.log("add_FAV_Movies API ERROR............", err);
+       // console.log("ADD_COMMENT_Movies API ERROR............", err);
+       if(err instanceof AxiosError){
+        toast.error(err.response?.data.message)
+    }
     }
 
 }
@@ -87,10 +89,14 @@ export const removeFavMovie = async(token:string,_id:string)=>{
             throw new Error(response.data.message);
         }
         console.log(`REMOVE_Fav_MOVIE_API....`, response)
+        toast.success(response.data.message)
         return response.data.favMovies;
     }
     catch (err) {
-        console.log("REMOVE_FAV_Movies API ERROR............", err);
+        // console.log("ADD_COMMENT_Movies API ERROR............", err);
+        if(err instanceof AxiosError){
+            toast.error(err.response?.data.message)
+        }
     }
 }
 
@@ -110,9 +116,13 @@ export const addCommnet=async(token:string,_id:string,text:string,rating:string)
             throw new Error(response.data.message);
         }
         console.log(`ADD_COMMENT_MOVIE_API....`, response)
+        toast.success(response.data.message)
 
     }
     catch (err) {
-        console.log("ADD_COMMENT_Movies API ERROR............", err);
+        // console.log("ADD_COMMENT_Movies API ERROR............", err);
+        if(err instanceof AxiosError){
+            toast.error(err.response?.data.message)
+        }
     }
 }

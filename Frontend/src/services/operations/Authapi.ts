@@ -5,6 +5,8 @@ import { setCurrentUser, setToken } from "../../redux/slices/authSlice";
 import { setFavMovie, setMovie } from "../../redux/slices/movieSlice";
 import { NavigateFunction } from "react-router-dom";
 import { Dispatch } from "redux";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 const { SIGNUP_API, LOGIN_API } = endpoints;
 
 interface SignUpResponse {
@@ -26,7 +28,7 @@ export const login = (email: string, password: string, navigate: (path: string) 
                 bodyData: { email, password }
             });
 
-            console.log("LOGIN API RESPONSE............", response.data.user);
+            console.log("LOGIN API RESPONSE............", response.data.message);
             // const d
 
             if (!response.data.success) {
@@ -40,12 +42,14 @@ export const login = (email: string, password: string, navigate: (path: string) 
             dispatch(setFavMovie(user.FavMovie))
             localStorage.setItem("token", JSON.stringify(token));
             localStorage.setItem("user", JSON.stringify(user));
-
+            toast.success(response.data.message)
             navigate("/");
-        } catch (error: any) {
-            console.log("LOGIN API ERROR............", error.message);
-            // toast.error("Signup Failed");
-            navigate("/signup");
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.log("LOGIN API ERROR............", error.response?.data.message);
+                toast.error(error.response?.data.message)
+
+            }
         } finally {
             // dispatch(setLoading(false));
             // toast.dismiss(toastId);
@@ -56,7 +60,7 @@ export const login = (email: string, password: string, navigate: (path: string) 
 
 
 export const signUp = (name: string, email: string, password: string, navigate: (path: string) => void) => {
-    return async (dispatch: (action: any) => void) => {
+    return async (_dispatch: (action: any) => void) => {
         ;
         // console.log("1234", name, email)
         try {
@@ -71,10 +75,12 @@ export const signUp = (name: string, email: string, password: string, navigate: 
             if (!response.data.success) {
                 throw new Error(response.data.message);
             }
-            // toast.success("Signup Successful");
+            toast.success(response.data.message);
             navigate("/login");
-        } catch (error: any) {
-            console.log("SIGNUP API ERROR............", error);
+        } catch (error) {
+           if(error instanceof AxiosError){
+            toast.error(error.response?.data.message)
+           }
             // toast.error("Signup Failed");
             navigate("/signup");
         } finally {
@@ -91,7 +97,7 @@ export function logout(navigate: NavigateFunction) {
             console.log('Logging out...');
             dispatch(setToken(null));
             dispatch(setCurrentUser(null));
-            
+
             dispatch(setFavMovie([]));
             localStorage.removeItem('token');
             localStorage.removeItem('user');

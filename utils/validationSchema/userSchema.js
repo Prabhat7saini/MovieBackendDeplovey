@@ -3,7 +3,7 @@ const yup = require('yup');
 const signUPSchema = yup.object().shape({
     name: yup.string()
         .required(' Name is required')
-        .matches(/^[A-Za-z]+$/, 'First Name can only contain alphabetic characters'),
+        .matches(/^[A-Za-z\s]+$/, 'Name can only contain alphabetic characters and spaces'),
 
    
     email: yup.string().email('Invalid email').required('Email is required'),

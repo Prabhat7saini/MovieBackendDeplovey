@@ -5,8 +5,8 @@ import { Movie, UserState } from "../../utils/interface/types";
 const initialState: UserState = {
   loading: false,
   Movies: [],
-  favMovie: []
-
+  favMovie: [],
+  issearch:false
 };
 
 // Create the user slice
@@ -22,12 +22,16 @@ const userSlice = createSlice({
     },
     setFavMovie(state, action: PayloadAction<Movie[]>) {
       state.favMovie = action.payload
+    },
+    setIsSearch(state,action:PayloadAction<boolean>){
+      state.issearch=action.payload
     }
+
   },
 });
 
 // Export actions
-export const { setLoading, setMovie,setFavMovie } = userSlice.actions;
+export const { setLoading, setMovie,setFavMovie ,setIsSearch} = userSlice.actions;
 
 // Export reducer
 export default userSlice.reducer;

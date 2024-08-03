@@ -101,7 +101,7 @@ exports.login = async (req, res) => {
                 success: true,
                 token,
                 user,
-                message: `User Login Success`,
+                message: `Login was successful. You have access to your account.`,
             })
         }
         else {

@@ -1,41 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import { Grid } from '@mui/material';
 import MovieCard from '../../component/common/MovieCard';
-import { fetchFavMovie, fetchMovies } from '../../services/operations/Moviesapi';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFavMovie, setLoading } from '../../redux/slices/movieSlice';
+
+import {  useSelector } from 'react-redux';
+
 import { RootState } from '../../redux/store';
 import Loader from '../../component/common/Loader';
 
 const ShowMovies: React.FC = () => {
   const [movies, setMovies] = useState<any[]>([]);
 
-  const token: string = useSelector((state: RootState) => state.auth.token) as string 
+  const Movies=useSelector((state:RootState)=>state.movies.Movies);
+  
+  // const token: string = useSelector((state: RootState) => state.auth.token) as string 
   const loading=useSelector((state:RootState)=>state.movies.loading)
-
-  const dispatch = useDispatch();
+ 
   useEffect(() => {
-    const fetchAndSetMovies = async () => {
-      try {
-        dispatch(setLoading(true));
-        const moviesRes = await fetchMovies();
-        setMovies(moviesRes);
-
-        if (token) {
-          const favMoviesRes = await fetchFavMovie(token);
-          // setFavMovies(favMoviesRes?.data.favMovies || []);
-          dispatch(setFavMovie(favMoviesRes?.data.favMovies || []))
-        }
-      } catch (error) {
-        console.error("Failed to fetch movies:", error);
-      }
-      finally{
-        dispatch(setLoading(false))
-      }
-    };
-
-    fetchAndSetMovies();
-  }, [token]);
+ 
+    setMovies(Movies);
+  }, [Movies]);
+ 
 
   return (
     loading ?(<Loader/>):( <Grid container spacing={2} sx={{ marginTop: "5px" }}>

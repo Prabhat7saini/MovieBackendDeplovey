@@ -8,6 +8,7 @@ import { Movie } from '../../utils/interface/types';
 import { addCommnet, fetchMovies } from '../../services/operations/Moviesapi';
 import Loader from './Loader';
 import { setLoading } from '../../redux/slices/movieSlice';
+import { toast } from 'react-toastify';
 
 interface CommentFormInput {
     text: string;
@@ -23,18 +24,37 @@ const MovieDetailCard: React.FC = () => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [text, setText] = useState<string>('');
     const [userRating, setUserRating] = useState<number | null>(null);
+    const [error, setError] = useState<string | null>(null); // State for error message
     const { _id } = useParams<{ _id: string }>();
 
     const { register, handleSubmit, reset, setValue } = useForm<CommentFormInput>();
 
     const handleCommentSubmit: SubmitHandler<CommentFormInput> = async (formData) => {
-        dispatch(setLoading(true));
-        reset();
+        setError(null); // Reset error state on submit
         const { text, rating } = formData;
-        await addCommnet(token, _id!, text, rating);
-        setText('');
-        setUserRating(null);
-        dispatch(setLoading(false));
+
+        // Validate comment and rating
+        console.log(text,rating)
+        if (!text || !rating) {
+            setError('Both comment and rating are required.');
+            return;
+        }
+
+        dispatch(setLoading(true));
+        try {
+            await addCommnet(token, _id!, text, rating);
+            // Refresh the movie data after submitting the comment
+            const moviesData = await fetchMovies();
+            setMovies(moviesData);
+        } catch (error) {
+            console.error('Error submitting comment:', error);
+            // toast.error(')
+        } finally {
+            setText('');
+            setUserRating(null);
+            dispatch(setLoading(false));
+        }
+        reset()
     };
 
     useEffect(() => {
@@ -121,6 +141,8 @@ const MovieDetailCard: React.FC = () => {
                                     <strong>Your Rating:</strong> {userRating !== null ? userRating : 'Not rated yet by Default 1'}
                                 </Typography>
 
+
+
                                 {currentUser && (
                                     <form onSubmit={handleSubmit(handleCommentSubmit)} style={{ marginTop: '1rem' }}>
                                         <TextField
@@ -145,7 +167,11 @@ const MovieDetailCard: React.FC = () => {
                                         </Button>
                                     </form>
                                 )}
-
+                                {error && (
+                                    <Typography color="error" variant="body2" style={{ marginTop: '1rem' }}>
+                                        {error}
+                                    </Typography>
+                                )}
                                 {commentArray && commentArray.map((comment, index) => (
                                     <div key={index}>
                                         <h2 style={{ margin: '2rem' }}>Comment & Rating by</h2>

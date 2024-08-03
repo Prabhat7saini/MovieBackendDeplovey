@@ -12,6 +12,7 @@ import { setLoading } from '../../redux/slices/movieSlice';
 import Loader from '../../component/common/Loader'; // Ensure you have a Loader component
 import { UnknownAction } from 'redux';
 import React from 'react';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,7 @@ const Login = () => {
       dispatch(setLoading(true));
       const { email, password } = data;
       await dispatch(login(email, password, navigate) as unknown as UnknownAction);
+      // toast.success(`Login successfully`);
     } catch (error) {
       console.error('Error during login:', error);
     } finally {

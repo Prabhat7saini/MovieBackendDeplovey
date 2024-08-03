@@ -43,7 +43,8 @@ export interface Movie {
 export interface UserState {
     loading: boolean
     Movies: Movie[]
-    favMovie?: Movie[] | []
+    favMovie?: Movie[] | [];
+    issearch:boolean
 }
 
 export interface user {

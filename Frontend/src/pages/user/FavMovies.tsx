@@ -1,7 +1,7 @@
 
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import MovieCard from '../../component/common/MovieCard';
 import { fetchFavMovie } from '../../services/operations/Moviesapi';
 import { setFavMovie } from '../../redux/slices/movieSlice';
@@ -44,7 +44,11 @@ const FavMovies = () => {
             </Grid>
           ))
         ) : (
-          <></>
+          <Grid item xs={12} container justifyContent="center" alignItems="center" sx={{ height: '100%' }}>
+                    <Typography variant="h6" align="center">
+                        You Don't Have Any Favorite Movie
+                    </Typography>
+                </Grid>
         )}
       </Grid>
     )
