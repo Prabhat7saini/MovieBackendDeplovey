@@ -18,7 +18,7 @@ app.use(cookieParser());
 // app.use(cors());
 app.use(
     cors({
-        origin: '*',
+        origin: 'https://movie-frontend-dep.onrender.com/',
         credential: true,
     })
 );
